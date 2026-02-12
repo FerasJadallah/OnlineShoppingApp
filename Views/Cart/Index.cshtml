@@ -44,7 +44,7 @@
                                     <span class="text-muted">@String.Format("{0:C0}", item.UnitPrice) each</span>
                                 </div>
                                 <div class="col-12 col-md-5">
-                                    <form asp-controller="Cart" asp-action="UpdateQuantity" method="post" class="cart-update-form">
+                                    <form asp-controller="Cart" asp-action="UpdateQuantity" method="post" class="cart-update-form" data-remove-url="@Url.Action("RemoveFromCart", "Cart")">
                                         <input type="hidden" name="productId" value="@item.ProductId" />
                                         <div class="d-flex flex-wrap align-items-center gap-2">
                                             <button type="button" class="btn btn-outline-primary rounded-pill px-3 py-1 quantity-btn" data-delta="-1" aria-label="Decrease quantity">
@@ -177,7 +177,17 @@
                 buttons.forEach(btn => {
                     btn.addEventListener('click', () => {
                         const delta = Number(btn.dataset.delta);
-                        input.value = clamp(Number(input.value) + delta);
+                        const current = Number(input.value) || 1;
+                        const next = current + delta;
+
+                        // If user hits "-" while at 1, remove item
+                        if (delta < 0 && current <= 1) {
+                            form.action = form.dataset.removeUrl;
+                            submitWithScroll(form);
+                            return;
+                        }
+
+                        input.value = clamp(next);
                         submitWithScroll(form);
                     });
                 });

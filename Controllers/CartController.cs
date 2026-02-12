@@ -69,7 +69,8 @@ public class CartController : Controller
     {
         if (quantity <= 0)
         {
-            TempData["Error"] = "Quantity must be positive";
+            await _cartService.RemoveFromCartAsync(productId);
+            TempData["Message"] = "Item removed from cart";
             return RedirectToAction(nameof(Index));
         }
 
