@@ -14,9 +14,9 @@ ASP.NET Core MVC e-commerce demo with session cart, EF Core, and a responsive Bo
 - Seed data with local product images
 
 ## Screenshots
-- Home: `screenshots/Home.png`
-- Products: `screenshots/Products.png`
-- Cart (discount): `screenshots/Cart.png`
+| Home | Products | Cart |
+|------|----------|------|
+| ![Home](screenshots/Home.png) | ![Products](screenshots/Products.png) | ![Cart](screenshots/Cart.png) |
 
 
 ## Tech Stack
