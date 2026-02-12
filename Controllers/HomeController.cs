@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OnlineShoppingApp.Data;
 using OnlineShoppingApp.Models;
 
@@ -16,9 +17,10 @@ public class HomeController : Controller
         _context = context;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var featured = await _context.Products.Take(3).ToListAsync();
+        return View(featured);
     }
 
     public IActionResult Privacy()

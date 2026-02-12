@@ -1,5 +1,4 @@
-@using Microsoft.EntityFrameworkCore
-@inject OnlineShoppingApp.Data.AppDbContext _context
+@model IEnumerable<Product>
 @{
     ViewData["Title"] = "Home";
 }
@@ -74,10 +73,7 @@
                 </a>
             </div>
             <div class="row">
-                @{
-                    var featured = await _context.Products.Take(3).ToListAsync();
-                }
-                @foreach (var product in featured)
+                @foreach (var product in Model)
                 {
                     <div class="col-md-4">
                         <div class="card h-100 border-0 shadow-sm hover-scale">
