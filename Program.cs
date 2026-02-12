@@ -1,8 +1,14 @@
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using OnlineShoppingApp.Data;
 using OnlineShoppingApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var culture = new CultureInfo("tr-TR");
+CultureInfo.DefaultThreadCurrentCulture = culture;
+CultureInfo.DefaultThreadCurrentUICulture = culture;
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -17,6 +23,13 @@ builder.Services.AddScoped<ICartService, SessionCartService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 var app = builder.Build();
+
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture(culture),
+    SupportedCultures = new[] { culture },
+    SupportedUICultures = new[] { culture }
+});
 
 // Seed the database
 using (var scope = app.Services.CreateScope())

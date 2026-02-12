@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 html {
   font-size: 14px;
 }
@@ -19,4 +21,45 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+
+:root {
+  --primary: #0d6efd;
+  --success: #198754;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  min-height: 100vh;
+}
+
+.card {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.btn {
+  border-radius: 2rem;
+  padding: 0.5rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(13,110,253,0.3);
+}
+
+.navbar {
+  backdrop-filter: blur(10px);
+  background-color: rgba(255,255,255,0.9) !important;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+}
+
+.badge {
+  border-radius: 2rem;
+  padding: 0.5rem 1rem;
 }

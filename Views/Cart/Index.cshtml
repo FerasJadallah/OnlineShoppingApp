@@ -4,13 +4,15 @@
     ViewData["Title"] = "Shopping Cart";
 }
 
-<div class="container mt-4">
-    <h1 class="mb-4">Your Cart</h1>
+<div class="container mt-5">
+    <h1 class="display-4 fw-bold mb-5">
+        <i class="bi bi-cart-check text-primary"></i> Your Cart
+    </h1>
 
     @if (TempData["Message"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["Message"]
+        <div class="alert alert-success alert-dismissible fade show rounded-pill border-0 shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["Message"]
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
@@ -18,92 +20,104 @@
     @if (!Model.Any())
     {
         <div class="text-center py-5">
-            <h3>Your cart is empty</h3>
-            <a asp-controller="Products" asp-action="Index" class="btn btn-primary mt-3">
-                Continue Shopping
+            <div class="display-1 text-muted mb-4">
+                <i class="bi bi-cart-x"></i>
+            </div>
+            <h2 class="fw-light mb-4">Your cart is feeling lonely</h2>
+            <a asp-controller="Products" asp-action="Index" class="btn btn-primary btn-lg rounded-pill px-5">
+                <i class="bi bi-shop"></i> Start Shopping
             </a>
         </div>
     }
     else
     {
-        <div class="row">
-            <div class="col-md-8">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Price</th>
-                                    <th>Quantity</th>
-                                    <th>Total</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model)
-                                {
-                                    <tr>
-                                        <td>@item.ProductName</td>
-                                        <td>@item.UnitPrice.ToString("N0")</td>
-                                        <td>
-                                            <form asp-controller="Cart" asp-action="UpdateQuantity" method="post" class="d-flex align-items-center">
-                                                <input type="hidden" name="productId" value="@item.ProductId" />
-                                                <input type="number" name="quantity" value="@item.Quantity" min="1" class="form-control" style="width: 80px;" />
-                                                <button type="submit" class="btn btn-sm btn-outline-secondary ms-2">
-                                                    Update
-                                                </button>
-                                            </form>
-                                        </td>
-                                        <td>@item.FinalPrice.ToString("N0")</td>
-                                        <td>
-                                            <form asp-controller="Cart" asp-action="RemoveFromCart" method="post">
-                                                <input type="hidden" name="productId" value="@item.ProductId" />
-                                                <button type="submit" class="btn btn-sm btn-danger">
-                                                    Remove
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+        <div class="row g-5">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        @foreach (var item in Model)
+                        {
+                            <div class="row align-items-center py-3 border-bottom">
+                                <div class="col-md-5">
+                                    <h5 class="fw-bold mb-1">@item.ProductName</h5>
+                                    <span class="text-muted">@String.Format("{0:C0}", item.UnitPrice) each</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <form asp-controller="Cart" asp-action="UpdateQuantity" method="post" class="d-flex align-items-center">
+                                        <input type="hidden" name="productId" value="@item.ProductId" />
+                                        <input type="number" name="quantity" value="@item.Quantity" min="1" class="form-control rounded-pill text-center" style="width: 80px;" />
+                                        <button type="submit" class="btn btn-link text-primary ms-2">
+                                            <i class="bi bi-arrow-repeat"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                <div class="col-md-2">
+                                    <span class="fw-bold">@String.Format("{0:C0}", item.FinalPrice)</span>
+                                </div>
+                                <div class="col-md-2 text-end">
+                                    <form asp-controller="Cart" asp-action="RemoveFromCart" method="post">
+                                        <input type="hidden" name="productId" value="@item.ProductId" />
+                                        <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-4">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Order Summary</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Subtotal:</span>
-                            <span>@ViewBag.Subtotal.ToString("N0")</span>
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-lg bg-primary text-white">
+                    <div class="card-body p-4">
+                        <h4 class="fw-bold mb-4">Order Summary</h4>
+                        
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Subtotal</span>
+                            <span class="fw-bold">@String.Format("{0:C0}", ViewBag.Subtotal)</span>
                         </div>
+                        
                         @if (ViewBag.Discount > 0)
                         {
-                            <div class="d-flex justify-content-between mb-2 text-success">
-                                <span>Discount (10%):</span>
-                                <span>-@ViewBag.Discount.ToString("N0")</span>
+                            <div class="d-flex justify-content-between mb-3 text-warning">
+                                <span><i class="bi bi-tags"></i> Discount (10%)</span>
+                                <span class="fw-bold">-@String.Format("{0:C0}", ViewBag.Discount)</span>
                             </div>
                         }
-                        <hr />
-                        <div class="d-flex justify-content-between mb-3">
-                            <strong>Total:</strong>
-                            <strong class="text-primary">@ViewBag.Total.ToString("N0")</strong>
+                        
+                        <hr class="bg-white opacity-25">
+                        
+                        <div class="d-flex justify-content-between mb-4">
+                            <span class="fs-5">Total</span>
+                            <span class="fs-3 fw-bold">@String.Format("{0:C0}", ViewBag.Total)</span>
                         </div>
+                        
                         <form asp-controller="Cart" asp-action="ClearCart" method="post">
-                            <button type="submit" class="btn btn-outline-danger w-100 mb-2">
-                                Clear Cart
+                            <button type="submit" class="btn btn-outline-light w-100 rounded-pill mb-3">
+                                <i class="bi bi-cart-x"></i> Clear Cart
                             </button>
                         </form>
-                        <a asp-controller="Products" asp-action="Index" class="btn btn-outline-primary w-100">
-                            Continue Shopping
+                        
+                        <a asp-controller="Products" asp-action="Index" class="btn btn-light w-100 rounded-pill text-primary fw-bold">
+                            <i class="bi bi-arrow-left"></i> Continue Shopping
                         </a>
                     </div>
                 </div>
+                
+                @if (ViewBag.Discount == 0 && ViewBag.Subtotal < 5000)
+                {
+                    <div class="card border-0 shadow-sm mt-4 bg-light">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-info-circle-fill text-primary fs-4 me-3"></i>
+                                <div>
+                                    <small class="text-muted">Add @String.Format("{0:C0}", 5000 - ViewBag.Subtotal) more to get 10% discount!</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     }
