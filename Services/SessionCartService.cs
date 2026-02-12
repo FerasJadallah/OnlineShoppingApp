@@ -21,20 +21,21 @@ public class SessionCartService : ICartService
     private ISession Session => _httpContextAccessor.HttpContext?.Session 
         ?? throw new InvalidOperationException("Session not available");
 
-    public async Task<List<CartItem>> GetCartItemsAsync()
+    public Task<List<CartItem>> GetCartItemsAsync()
     {
         var cartJson = Session.GetString(CartSessionKey);
         if (string.IsNullOrEmpty(cartJson))
-            return new List<CartItem>();
+            return Task.FromResult(new List<CartItem>());
 
-        return JsonSerializer.Deserialize<List<CartItem>>(cartJson) ?? new List<CartItem>();
+        var items = JsonSerializer.Deserialize<List<CartItem>>(cartJson) ?? new List<CartItem>();
+        return Task.FromResult(items);
     }
 
-    private async Task SaveCartItemsAsync(List<CartItem> items)
+    private Task SaveCartItemsAsync(List<CartItem> items)
     {
         var cartJson = JsonSerializer.Serialize(items);
         Session.SetString(CartSessionKey, cartJson);
-        await Task.CompletedTask;
+        return Task.CompletedTask;
     }
 
     public async Task AddToCartAsync(int productId, int quantity = 1)

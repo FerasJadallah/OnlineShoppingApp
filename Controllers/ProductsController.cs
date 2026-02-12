@@ -17,13 +17,6 @@ public class ProductsController : Controller
     public async Task<IActionResult> Index()
     {
         var products = await _context.Products.ToListAsync();
-        Console.WriteLine($"========== DEBUG ==========");
-        Console.WriteLine($"✅ Found {products.Count} products in database");
-        foreach (var p in products)
-        {
-            Console.WriteLine($"   - {p.Name}: ${p.Price}");
-        }
-        Console.WriteLine($"============================");
         return View(products);
     }
 }

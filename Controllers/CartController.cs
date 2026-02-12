@@ -20,9 +20,8 @@ public class CartController : Controller
     {
         var items = await _cartService.GetCartItemsAsync();
         var subtotal = await _cartService.GetSubtotalAsync();
-        
-        // Discount logic: 10% off if subtotal > 5000
-        var discount = subtotal > 5000 ? subtotal * 0.10m : 0;
+
+        var discount = DiscountPolicy.CalculateDiscount(subtotal);
         var total = subtotal - discount;
 
         ViewBag.Subtotal = subtotal;
@@ -68,7 +67,14 @@ public class CartController : Controller
     [HttpPost]
     public async Task<IActionResult> UpdateQuantity(int productId, int quantity)
     {
+        if (quantity <= 0)
+        {
+            TempData["Error"] = "Quantity must be positive";
+            return RedirectToAction(nameof(Index));
+        }
+
         await _cartService.UpdateQuantityAsync(productId, quantity);
+        TempData["Message"] = "Quantity updated";
         return RedirectToAction(nameof(Index));
     }
 

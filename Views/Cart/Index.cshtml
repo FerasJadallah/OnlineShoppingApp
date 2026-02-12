@@ -1,4 +1,5 @@
 @model List<OnlineShoppingApp.Models.CartItem>
+@using OnlineShoppingApp.Services
 
 @{
     ViewData["Title"] = "Shopping Cart";
@@ -37,24 +38,32 @@
                     <div class="card-body p-4">
                         @foreach (var item in Model)
                         {
-                            <div class="row align-items-center py-3 border-bottom">
-                                <div class="col-md-5">
+                            <div class="row align-items-center gy-3 py-3 border-bottom">
+                                <div class="col-12 col-md-5">
                                     <h5 class="fw-bold mb-1">@item.ProductName</h5>
                                     <span class="text-muted">@String.Format("{0:C0}", item.UnitPrice) each</span>
                                 </div>
-                                <div class="col-md-3">
-                                    <form asp-controller="Cart" asp-action="UpdateQuantity" method="post" class="d-flex align-items-center">
+                                <div class="col-12 col-md-5">
+                                    <form asp-controller="Cart" asp-action="UpdateQuantity" method="post" class="cart-update-form">
                                         <input type="hidden" name="productId" value="@item.ProductId" />
-                                        <input type="number" name="quantity" value="@item.Quantity" min="1" class="form-control rounded-pill text-center" style="width: 80px;" />
-                                        <button type="submit" class="btn btn-link text-primary ms-2">
-                                            <i class="bi bi-arrow-repeat"></i>
-                                        </button>
+                                        <div class="d-flex flex-wrap align-items-center gap-2">
+                                            <button type="button" class="btn btn-outline-primary rounded-pill px-3 py-1 quantity-btn" data-delta="-1" aria-label="Decrease quantity">
+                                                <i class="bi bi-dash-lg fw-bold"></i>
+                                            </button>
+                                            
+                                            <input type="number" name="quantity" value="@item.Quantity" min="1" 
+                                                   class="form-control text-center border-0 bg-light fw-bold quantity-input" 
+                                                   style="width: 60px;" aria-label="Quantity" />
+                                            
+                                            <button type="button" class="btn btn-outline-primary rounded-pill px-3 py-1 quantity-btn" data-delta="1" aria-label="Increase quantity">
+                                                <i class="bi bi-plus-lg fw-bold"></i>
+                                            </button>
+                                            
+                                            <span class="fw-bold ms-2 fs-6 fs-md-5">@String.Format("{0:C0}", item.FinalPrice)</span>
+                                        </div>
                                     </form>
                                 </div>
-                                <div class="col-md-2">
-                                    <span class="fw-bold">@String.Format("{0:C0}", item.FinalPrice)</span>
-                                </div>
-                                <div class="col-md-2 text-end">
+                                <div class="col-12 col-md-2 text-end">
                                     <form asp-controller="Cart" asp-action="RemoveFromCart" method="post">
                                         <input type="hidden" name="productId" value="@item.ProductId" />
                                         <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill">
@@ -81,7 +90,7 @@
                         @if (ViewBag.Discount > 0)
                         {
                             <div class="d-flex justify-content-between mb-3 text-warning">
-                                <span><i class="bi bi-tags"></i> Discount (10%)</span>
+                                <span><i class="bi bi-tags"></i> Discount (@(DiscountPolicy.Percent * 100)%)</span>
                                 <span class="fw-bold">-@String.Format("{0:C0}", ViewBag.Discount)</span>
                             </div>
                         }
@@ -105,14 +114,14 @@
                     </div>
                 </div>
                 
-                @if (ViewBag.Discount == 0 && ViewBag.Subtotal < 5000)
+                @if (ViewBag.Discount == 0 && ViewBag.Subtotal < DiscountPolicy.Threshold)
                 {
                     <div class="card border-0 shadow-sm mt-4 bg-light">
                         <div class="card-body">
                             <div class="d-flex align-items-center">
                                 <i class="bi bi-info-circle-fill text-primary fs-4 me-3"></i>
                                 <div>
-                                    <small class="text-muted">Add @String.Format("{0:C0}", 5000 - ViewBag.Subtotal) more to get 10% discount!</small>
+                                    <small class="text-muted">Add @String.Format("{0:C0}", DiscountPolicy.Threshold - ViewBag.Subtotal) more to get 10% discount!</small>
                                 </div>
                             </div>
                         </div>
@@ -122,3 +131,75 @@
         </div>
     }
 </div>
+
+<style>
+    .quantity-input::-webkit-outer-spin-button,
+    .quantity-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    .quantity-input {
+        -moz-appearance: textfield;
+    }
+.quantity-btn {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+@@media (max-width: 576px) {
+    .quantity-input {
+        width: 70px !important;
+    }
+    .cart-update-form .fw-bold.fs-md-5 {
+        font-size: 1.1rem;
+    }
+}
+</style>
+
+@section Scripts {
+    <script>
+        (() => {
+            const forms = document.querySelectorAll('.cart-update-form');
+
+            const submitWithScroll = (form) => {
+                sessionStorage.setItem('cartScroll', window.scrollY.toString());
+                form.submit();
+            };
+
+            forms.forEach(form => {
+                const input = form.querySelector('.quantity-input');
+                const buttons = form.querySelectorAll('.quantity-btn');
+
+                const clamp = (val) => Math.max(1, isNaN(val) ? 1 : val);
+
+                buttons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const delta = Number(btn.dataset.delta);
+                        input.value = clamp(Number(input.value) + delta);
+                        submitWithScroll(form);
+                    });
+                });
+
+                input.addEventListener('change', () => {
+                    input.value = clamp(Number(input.value));
+                    submitWithScroll(form);
+                });
+
+                input.addEventListener('keyup', (e) => {
+                    if (e.key === 'Enter') {
+                        input.value = clamp(Number(input.value));
+                        submitWithScroll(form);
+                    }
+                });
+            });
+
+            const saved = sessionStorage.getItem('cartScroll');
+            if (saved) {
+                window.scrollTo({ top: Number(saved), behavior: 'instant' });
+                sessionStorage.removeItem('cartScroll');
+            }
+        })();
+    </script>
+}
