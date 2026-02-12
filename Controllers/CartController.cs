@@ -36,8 +36,22 @@ public class CartController : Controller
     [HttpPost]
     public async Task<IActionResult> AddToCart(int productId, int quantity = 1)
     {
-        await _cartService.AddToCartAsync(productId, quantity);
-        TempData["Message"] = "Item added to cart!";
+        if (quantity <= 0)
+        {
+            TempData["Error"] = "Quantity must be positive";
+            return RedirectToAction("Index", "Products");
+        }
+
+        try
+        {
+            await _cartService.AddToCartAsync(productId, quantity);
+            TempData["Message"] = "Item added to cart!";
+        }
+        catch (ArgumentException ex)
+        {
+            TempData["Error"] = ex.Message;
+        }
+
         return RedirectToAction("Index", "Products");
     }
 
