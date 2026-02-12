@@ -34,12 +34,5 @@ app.MapControllerRoute(
 app.Run();
 
 
-var app = builder.Build();
 
-// TEMPORARY - Delete after testing
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var canConnect = dbContext.Database.CanConnect();
-    Console.WriteLine($"Can connect to database: {canConnect}");
-}
+
