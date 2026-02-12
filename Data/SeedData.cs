@@ -25,7 +25,7 @@ public static class SeedData
                     Description = "High performance laptop for work and play",
                     Price = 45000,
                     Discount = 10,
-                    ImageUrl = "https://placehold.co/300x200/2563eb/white?text=Laptop",
+                    ImageUrl = "/images/products/laptop.png",
                     StockQuantity = 10
                 },
                 new Product
@@ -34,7 +34,7 @@ public static class SeedData
                     Description = "Wireless noise-cancelling headphones",
                     Price = 3500,
                     Discount = 15,
-                    ImageUrl = "https://placehold.co/300x200/7c3aed/white?text=Headphones",
+                    ImageUrl = "/images/products/headphones.jpeg",
                     StockQuantity = 25
                 },
                 new Product
@@ -43,7 +43,7 @@ public static class SeedData
                     Description = "Wireless ergonomic mouse",
                     Price = 1200,
                     Discount = 5,
-                    ImageUrl = "https://placehold.co/300x200/059669/white?text=Mouse",
+                    ImageUrl = "/images/products/mouse.jpg",
                     StockQuantity = 50
                 },
                 new Product
@@ -52,7 +52,7 @@ public static class SeedData
                     Description = "Mechanical gaming keyboard",
                     Price = 2500,
                     Discount = 20,
-                    ImageUrl = "https://placehold.co/300x200/dc2626/white?text=Keyboard",
+                    ImageUrl = "/images/products/keyboard.jpeg",
                     StockQuantity = 30
                 }
             );

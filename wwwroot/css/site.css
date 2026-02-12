@@ -63,3 +63,11 @@ body {
   border-radius: 2rem;
   padding: 0.5rem 1rem;
 }
+
+.brand-title {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 800;
+  font-size: 1.6rem;
+  letter-spacing: 0.02em;
+  color: #0d6efd !important;
+}
