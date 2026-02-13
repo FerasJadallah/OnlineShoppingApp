@@ -96,7 +96,7 @@ public class SessionCartService : ICartService
     public async Task<decimal> GetSubtotalAsync()
     {
         var cart = await GetCartItemsAsync();
-        return cart.Sum(x => x.LineTotal);
+        return cart.Sum(x => x.FinalPrice);
     }
 
     public async Task<int> GetCartCountAsync()

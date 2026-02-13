@@ -45,7 +45,7 @@
                         </div>
                     </div>
                     <div class="card-footer bg-white border-0 pb-4 pt-0">
-                        <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-grid">
+                        <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-grid products-add-to-cart">
                             <input type="hidden" name="productId" value="@product.Id" />
                             <input type="hidden" name="quantity" value="1" />
                             <button type="submit" class="btn btn-primary btn-lg rounded-pill">
@@ -68,3 +68,22 @@
         box-shadow: 0 1rem 2rem rgba(0,0,0,0.15) !important;
     }
 </style>
+
+@section Scripts {
+    <script>
+        (() => {
+            const forms = document.querySelectorAll('.products-add-to-cart');
+            forms.forEach(form => {
+                form.addEventListener('submit', () => {
+                    sessionStorage.setItem('productScroll', window.scrollY.toString());
+                });
+            });
+
+            const saved = sessionStorage.getItem('productScroll');
+            if (saved) {
+                window.scrollTo({ top: Number(saved), behavior: 'instant' });
+                sessionStorage.removeItem('productScroll');
+            }
+        })();
+    </script>
+}
